@@ -18,6 +18,8 @@ def download_model():
     url = "https://huggingface.co/CountFloyd/deepfake/resolve/main/inswapper_128.onnx"
     download_file_path = "./models/inswapper_128.onnx"
 
+    Path('./models/').mkdir(exist_ok=True)
+
     if not Path(download_file_path).is_file():
         request = urllib.request.urlopen(url)
         total = int(request.headers.get("Content-Length", 0))
