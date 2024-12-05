@@ -79,12 +79,16 @@ def swap_faces(source: io.BytesIO, template_dir: str, user_id: int):
 
     source_face = app.get(source_img)[0]
 
-    for sticker_i, file in enumerate(template_files):
-        output_filepath = f"./images/{user_id}_{sticker_i}.jpg"
+    output_bytes_oi = []
+
+    for file in template_files:
         res = cv2.imread(template_dir + file)
         faces = loaded_r[file]
 
         for face in faces:
             res = swapper.get(res, face, source_face, paste_back=True)
 
-        cv2.imwrite(output_filepath, res)
+        _, buffer = cv2.imencode(".jpg", res)
+        output_bytes_oi.append(buffer)
+
+    return output_bytes_oi

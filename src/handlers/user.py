@@ -1,5 +1,5 @@
 from aiogram import Router, F
-from aiogram.types import Message, URLInputFile, BufferedInputFile
+from aiogram.types import Message
 from ..utils.face_swap import swap_faces
 import io
 
@@ -23,11 +23,11 @@ async def get_photo_id(message: Message):
 
     sticker_pack_name = f"sticker_pack_{user_id}_by_dev_814244fb_bot"
 
-    swap_faces(file_in_io, "./images/templates/", user_id)
+    output_bytes_oi = swap_faces(file_in_io, "./images/templates/", user_id)
 
     await message.answer("Начинаем создавать стикеры")
 
-    await create_sticker_pack(message, user_id, sticker_pack_name)
+    await create_sticker_pack(message, user_id, sticker_pack_name, output_bytes_oi)
 
     try:
         sticker_set = await message.bot.get_sticker_set(name=sticker_pack_name)

@@ -1,18 +1,17 @@
 from aiogram.types import Message
-from aiogram.types import FSInputFile
+from aiogram.types import BufferedInputFile
 from aiogram.types.input_sticker import InputSticker
 from aiogram.enums import StickerFormat
 import logging
 
 
-async def create_sticker_pack(message: Message, user_id, sticker_pack_name: str):
+async def create_sticker_pack(message: Message, user_id, sticker_pack_name: str, output_bytes_oi: list):
 
     stickers = []
-    for i in range(10):
-        output_filepath = f"./images/{user_id}_{i}.jpg"
+    for buffer in output_bytes_oi:
         stickers.append(
             InputSticker(
-                sticker=FSInputFile(output_filepath),
+                sticker=BufferedInputFile(buffer, filename='buffer.jpg'),
                 format=StickerFormat.STATIC,
                 emoji_list=["☺️"],
             )
