@@ -18,7 +18,6 @@ async def get_photo_id(message: Message):
     file_in_io = io.BytesIO()
     await message.bot.download(file=message.photo[-1].file_id, destination=file_in_io)
 
-    print(file_in_io)
     await message.answer("Начинаем обработку Вашего изображения")
 
     sticker_pack_name = f"sticker_pack_{user_id}_by_dev_814244fb_bot"
