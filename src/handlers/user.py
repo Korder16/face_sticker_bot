@@ -20,7 +20,7 @@ async def get_photo_id(message: Message):
 
     await message.answer("Начинаем обработку Вашего изображения")
 
-    sticker_pack_name = f"sticker_pack_{user_id}_by_dev_814244fb_bot"
+    sticker_pack_name = f"sticker_pack_{user_id}_by_premieronline_face_sticker_bot"
 
     output_bytes_oi = swap_faces(file_in_io, "./images/templates/", user_id)
 
