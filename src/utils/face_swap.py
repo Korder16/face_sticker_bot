@@ -13,6 +13,8 @@ import sys
 import os
 import io
 
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 
 def download_model():
     url = "https://huggingface.co/CountFloyd/deepfake/resolve/main/inswapper_128.onnx"
@@ -37,6 +39,17 @@ def download_model():
                     block_size
                 ),
             )
+
+
+def swap_face(source_face, template_dir: str, file: str, loaded_r, swapper):
+    res = cv2.imread(template_dir + file)
+    faces = loaded_r[file]
+
+    for face in faces:
+        res = swapper.get(res, face, source_face, paste_back=True)
+
+    _, buffer = cv2.imencode(".jpg", res)
+    return buffer
 
 
 def swap_faces(source: io.BytesIO, template_dir: str, user_id: int):
@@ -81,16 +94,9 @@ def swap_faces(source: io.BytesIO, template_dir: str, user_id: int):
 
     source_face = app.get(source_img)[0]
 
-    output_bytes_oi = []
+    with ThreadPoolExecutor() as executor:
+        futures = [executor.submit(swap_face, source_face, template_dir, file, loaded_r, swapper) for file in template_files]
 
-    for file in template_files:
-        res = cv2.imread(template_dir + file)
-        faces = loaded_r[file]
+        output_bytes_io = (future.result() for future in as_completed(futures))
 
-        for face in faces:
-            res = swapper.get(res, face, source_face, paste_back=True)
-
-        _, buffer = cv2.imencode(".jpg", res)
-        output_bytes_oi.append(buffer)
-
-    return output_bytes_oi
+    return output_bytes_io

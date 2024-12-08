@@ -2,6 +2,7 @@ from aiogram import Router, F
 from aiogram.types import Message
 from ..utils.face_swap import swap_faces
 import io
+import time
 
 from ..utils.create_sticker_pack import create_sticker_pack
 
@@ -22,11 +23,17 @@ async def get_photo_id(message: Message):
 
     sticker_pack_name = f"sticker_pack_{user_id}_by_premieronline_face_sticker_bot"
 
-    output_bytes_oi = swap_faces(file_in_io, "./images/templates/", user_id)
+    start = time.time()
+    output_bytes_io = swap_faces(file_in_io, "./images/templates/", user_id)
+    end = time.time()
+    print(f'swap time passed: {end - start}')
 
     await message.answer("Начинаем создавать стикеры")
 
-    await create_sticker_pack(message, user_id, sticker_pack_name, output_bytes_oi)
+    start = time.time()
+    await create_sticker_pack(message, user_id, sticker_pack_name, output_bytes_io)
+    end = time.time()
+    print(f'sticker pack creation time passed: {end - start}')
 
     try:
         sticker_set = await message.bot.get_sticker_set(name=sticker_pack_name)
