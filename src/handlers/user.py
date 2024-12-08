@@ -24,7 +24,7 @@ async def get_photo_id(message: Message):
     sticker_pack_name = f"sticker_pack_{user_id}_by_premieronline_face_sticker_bot"
 
     start = time.time()
-    output_bytes_io = swap_faces(file_in_io, "./images/templates2/", user_id)
+    output_bytes_io = swap_faces(file_in_io, "./images/templates/", user_id)
     end = time.time()
     print(f"swap time passed: {end - start}")
 
