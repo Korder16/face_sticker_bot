@@ -20,7 +20,7 @@ def download_model():
     url = "https://huggingface.co/CountFloyd/deepfake/resolve/main/inswapper_128.onnx"
     download_file_path = "./models/inswapper_128.onnx"
 
-    Path('./models/').mkdir(exist_ok=True)
+    Path("./models/").mkdir(exist_ok=True)
 
     if not Path(download_file_path).is_file():
         request = urllib.request.urlopen(url)
@@ -95,7 +95,12 @@ def swap_faces(source: io.BytesIO, template_dir: str, user_id: int):
     source_face = app.get(source_img)[0]
 
     with ThreadPoolExecutor() as executor:
-        futures = [executor.submit(swap_face, source_face, template_dir, file, loaded_r, swapper) for file in template_files]
+        futures = [
+            executor.submit(
+                swap_face, source_face, template_dir, file, loaded_r, swapper
+            )
+            for file in template_files
+        ]
 
         output_bytes_io = (future.result() for future in as_completed(futures))
 

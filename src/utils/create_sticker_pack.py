@@ -5,13 +5,15 @@ from aiogram.enums import StickerFormat
 import logging
 
 
-async def create_sticker_pack(message: Message, user_id, sticker_pack_name: str, output_bytes_io: tuple):
+async def create_sticker_pack(
+    message: Message, user_id, sticker_pack_name: str, output_bytes_io: tuple
+):
 
     stickers = []
     for buffer in output_bytes_io:
         stickers.append(
             InputSticker(
-                sticker=BufferedInputFile(buffer, filename='buffer.jpg'),
+                sticker=BufferedInputFile(buffer, filename="buffer.jpg"),
                 format=StickerFormat.STATIC,
                 emoji_list=["☺️"],
             )

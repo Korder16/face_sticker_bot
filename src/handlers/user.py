@@ -24,16 +24,16 @@ async def get_photo_id(message: Message):
     sticker_pack_name = f"sticker_pack_{user_id}_by_premieronline_face_sticker_bot"
 
     start = time.time()
-    output_bytes_io = swap_faces(file_in_io, "./images/templates/", user_id)
+    output_bytes_io = swap_faces(file_in_io, "./images/templates2/", user_id)
     end = time.time()
-    print(f'swap time passed: {end - start}')
+    print(f"swap time passed: {end - start}")
 
     await message.answer("Начинаем создавать стикеры")
 
     start = time.time()
     await create_sticker_pack(message, user_id, sticker_pack_name, output_bytes_io)
     end = time.time()
-    print(f'sticker pack creation time passed: {end - start}')
+    print(f"sticker pack creation time passed: {end - start}")
 
     try:
         sticker_set = await message.bot.get_sticker_set(name=sticker_pack_name)
