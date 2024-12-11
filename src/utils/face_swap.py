@@ -52,7 +52,7 @@ def swap_face(source_face, template_dir: str, file: str, loaded_r, swapper):
     return buffer
 
 
-def swap_faces(source: io.BytesIO, template_dir: str, user_id: int):
+def swap_faces(source: io.BytesIO, template_dir: str):
     download_model()
 
     faces_file_path = "./configs/faces_dict.json"
@@ -66,14 +66,14 @@ def swap_faces(source: io.BytesIO, template_dir: str, user_id: int):
     for file in template_files:
         for face in loaded_r[file]:
             for key in face.keys():
-                if key in [
+                if key in {
                     "bbox",
                     "kps",
                     "landmark_3d_68",
                     "pose",
                     "landmark_2d_106",
                     "embedding",
-                ]:
+                }:
                     face[key] = np.array(face[key])
                 elif key in ["det_score"]:
                     face[key] = float(face[key])
@@ -103,5 +103,7 @@ def swap_faces(source: io.BytesIO, template_dir: str, user_id: int):
         ]
 
         output_bytes_io = (future.result() for future in as_completed(futures))
+
+    # output_bytes_io = (swap_face(source_face, template_dir, file, loaded_r, swapper) for file in template_files)
 
     return output_bytes_io
