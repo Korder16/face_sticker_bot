@@ -1,19 +1,27 @@
 from aiogram import Router, F
+from aiogram.filters import Command
 from aiogram.types import Message
 from os import getenv
 from dotenv import load_dotenv
-
+import asyncio
 
 load_dotenv()
 
 admin_router = Router()
-admins = set(getenv("ADMIN_IDS"))
+admins = {getenv("ADMIN_IDS")}
 
 
 # @admin_router.message(F.from_user.id.in_(admins))
 # @admin_router.message(F.photo)
 # async def get_photo_id(message: Message):
 #     await message.answer(message.photo[-1].file_id)
+
+
+@admin_router.message(F.from_user.id.in_(admins))
+@admin_router.message(Command("get_chat_id"))
+async def get_chat_id(message: Message):
+    print(message.chat.id)
+    await asyncio.sleep(0.01)
 
 
 @admin_router.message(F.from_user.id.in_(admins))
