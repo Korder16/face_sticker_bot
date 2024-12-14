@@ -13,7 +13,7 @@ import sys
 import os
 import io
 
-from concurrent.futures import ThreadPoolExecutor, as_completed
+import logging
 
 
 def download_model():
@@ -49,6 +49,7 @@ def swap_face(source_face, template_dir: str, file: str, loaded_r, swapper):
         res = swapper.get(res, face, source_face, paste_back=True)
 
     _, buffer = cv2.imencode(".jpg", res)
+    logging.info(f"processed image for file {file}")
     return buffer
 
 
@@ -94,16 +95,7 @@ def swap_faces(source: io.BytesIO, template_dir: str):
 
     source_face = app.get(source_img)[0]
 
-    with ThreadPoolExecutor() as executor:
-        futures = [
-            executor.submit(
-                swap_face, source_face, template_dir, file, loaded_r, swapper
-            )
-            for file in template_files
-        ]
-
-        output_bytes_io = (future.result() for future in as_completed(futures))
-
-    # output_bytes_io = (swap_face(source_face, template_dir, file, loaded_r, swapper) for file in template_files)
-
-    return output_bytes_io
+    return tuple(
+        swap_face(source_face, template_dir, file, loaded_r, swapper)
+        for file in template_files
+    )

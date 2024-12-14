@@ -10,12 +10,13 @@ async def create_sticker_pack(
 ):
 
     stickers = []
-    for buffer in output_bytes_io:
+    emojis = ("🥂", "😳", "😍", "🥲", "🥵", "🥴", "😫", "🚑", "🫡", "🤭")
+    for buffer, emoji in zip(output_bytes_io, emojis):
         stickers.append(
             InputSticker(
                 sticker=BufferedInputFile(buffer, filename="buffer.jpg"),
                 format=StickerFormat.STATIC,
-                emoji_list=["☺️"],
+                emoji_list=[emoji],
             )
         )
 
