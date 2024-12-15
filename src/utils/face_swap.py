@@ -53,7 +53,7 @@ def swap_face(source_face, template_dir: str, file: str, loaded_r, swapper):
     return buffer
 
 
-def swap_faces(source: io.BytesIO, template_dir: str):
+def prepare_swapper(template_images_dir: str):
     download_model()
 
     faces_file_path = "./configs/faces_dict.json"
@@ -61,7 +61,9 @@ def swap_faces(source: io.BytesIO, template_dir: str):
         loaded_r = json.load(json_file)
 
     template_files = [
-        file for file in listdir(template_dir) if isfile(join(template_dir, file))
+        file
+        for file in listdir(template_images_dir)
+        if isfile(join(template_images_dir, file))
     ]
 
     for file in template_files:
@@ -89,6 +91,14 @@ def swap_faces(source: io.BytesIO, template_dir: str):
     app.prepare(ctx_id=0, det_size=(640, 640))
     swapper = insightface.model_zoo.get_model(model_filepath)
     sys.stdout = sys.__stdout__
+
+    return swapper, app, loaded_r
+
+
+def swap_faces(source: io.BytesIO, template_dir: str, swapper, app, loaded_r):
+    template_files = [
+        file for file in listdir(template_dir) if isfile(join(template_dir, file))
+    ]
 
     nparr = np.frombuffer(source.getvalue(), np.uint8)
     source_img = cv2.imdecode(nparr, cv2.IMREAD_UNCHANGED)

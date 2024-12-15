@@ -1,7 +1,7 @@
 from aiogram import Router, F
 from aiogram.types import Message
 from aiogram.filters import Command
-from aiogram.types import ChatMemberAdministrator, ChatMemberMember, ChatMemberOwner
+from aiogram.types import ChatMemberBanned, ChatMemberLeft
 from ..utils.face_swap import swap_faces
 import io
 
@@ -22,7 +22,7 @@ async def get_file(message: Message):
 
 
 @user_router.message(F.photo, only_private_chat)
-async def make_custom_stickers(message: Message):
+async def make_custom_stickers(message: Message, swapper, app, loaded_r):
     user_id = message.from_user.id
 
     file_in_io = io.BytesIO()
@@ -32,7 +32,9 @@ async def make_custom_stickers(message: Message):
 
     sticker_pack_name = f"sticker_pack_{user_id}_by_premier_stikerbot"
 
-    output_bytes_io = swap_faces(file_in_io, "./images/templates/")
+    output_bytes_io = swap_faces(
+        file_in_io, "./images/templates/", swapper, app, loaded_r
+    )
 
     await message.answer("Начинаем создавать стикеры")
 
@@ -59,11 +61,11 @@ async def make_custom_stickers(message: Message):
 
 
 async def is_user_subscribed(message: Message):
-    chat_id = 123123
+    chat_id = -1001189635505
     member_status = await message.bot.get_chat_member(
         chat_id=chat_id, user_id=message.from_user.id
     )
-    return member_status in {ChatMemberMember, ChatMemberAdministrator, ChatMemberOwner}
+    return member_status.status not in {ChatMemberBanned, ChatMemberLeft}
 
 
 @user_router.message(Command("start"), only_private_chat)
