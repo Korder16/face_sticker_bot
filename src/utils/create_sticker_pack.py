@@ -35,7 +35,7 @@ async def create_sticker_pack(
         await message.bot.create_new_sticker_set(
             user_id=user_id,
             name=sticker_pack_name,
-            title="title",
+            title="@premieronline : Праздничная пленка",
             stickers=stickers,
         )
     except:
