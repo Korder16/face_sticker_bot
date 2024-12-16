@@ -29,7 +29,7 @@ async def create_sticker_pack(
         )
 
     except:
-        logging.info("sticker pack already deleted")
+        logging.exception("sticker pack already deleted")
 
     try:
         await message.bot.create_new_sticker_set(
@@ -39,4 +39,4 @@ async def create_sticker_pack(
             stickers=stickers,
         )
     except:
-        logging.info("cannot create sticker pack")
+        logging.exception("cannot create sticker pack")

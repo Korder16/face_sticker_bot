@@ -1,7 +1,7 @@
 from aiogram import Router, F
 from aiogram.types import Message
 from aiogram.filters import Command
-from aiogram.types import ChatMemberBanned, ChatMemberLeft
+from aiogram.enums import ChatMemberStatus
 from ..utils.face_swap import swap_faces
 import io
 
@@ -56,7 +56,7 @@ async def make_custom_stickers(message: Message, swapper, app, loaded_r):
 
             await message.answer("\n".join(message_tokens))
         except:
-            logging.info(
+            logging.exception(
                 f"cannot find sticker pack for user: {user_id}, name: {sticker_pack_name}"
             )
     else:
@@ -67,7 +67,8 @@ async def is_user_subscribed(message: Message):
     member_status = await message.bot.get_chat_member(
         chat_id=chat_id, user_id=message.from_user.id
     )
-    return member_status.status not in {ChatMemberBanned, ChatMemberLeft}
+    
+    return member_status.status not in {ChatMemberStatus.LEFT, ChatMemberStatus.KICKED}
 
 
 @user_router.message(Command("start"), only_private_chat)
