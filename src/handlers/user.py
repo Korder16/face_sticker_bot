@@ -31,7 +31,7 @@ async def make_custom_stickers(message: Message, swapper, app, loaded_r):
 
         await message.answer("Начинаем обработку Вашего изображения")
 
-        sticker_pack_name = f"sticker_pack_{user_id}_by_premier_stikerbot"
+        sticker_pack_name = f"sticker_pack_{user_id}_by_premier_stickerbot"
 
         output_bytes_io = swap_faces(
             file_in_io, "./images/templates/", swapper, app, loaded_r
