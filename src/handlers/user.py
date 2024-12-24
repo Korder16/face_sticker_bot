@@ -27,7 +27,9 @@ async def make_custom_stickers(message: Message, swapper, app, loaded_r):
         user_id = message.from_user.id
 
         file_in_io = io.BytesIO()
-        await message.bot.download(file=message.photo[-1].file_id, destination=file_in_io)
+        await message.bot.download(
+            file=message.photo[-1].file_id, destination=file_in_io
+        )
 
         await message.answer("Начинаем обработку Вашего изображения")
 
@@ -44,7 +46,7 @@ async def make_custom_stickers(message: Message, swapper, app, loaded_r):
         try:
             sticker_set = await message.bot.get_sticker_set(name=sticker_pack_name)
             await message.answer_sticker(sticker=sticker_set.stickers[0].file_id)
-            logging.info("sent sticker pack")
+            logging.info(f"sent sticker pack to user {message.from_user.id}")
 
             message_tokens = (
                 "Это откудова к нам такого красивого замело?",
@@ -60,20 +62,26 @@ async def make_custom_stickers(message: Message, swapper, app, loaded_r):
                 f"cannot find sticker pack for user: {user_id}, name: {sticker_pack_name}"
             )
     else:
-        await message.answer('Семёёён Семёныч! Хотели обойти систему? Подпишитесь, пожалуйста на @premieronline🥺👉🏻👈🏻')
+        await message.answer(
+            "Семёёён Семёныч! Хотели обойти систему? Подпишитесь, пожалуйста на @premieronline🥺👉🏻👈🏻"
+        )
+
 
 async def is_user_subscribed(message: Message):
     chat_id = -1001189635505
     member_status = await message.bot.get_chat_member(
         chat_id=chat_id, user_id=message.from_user.id
     )
-    
+
     return member_status.status not in {ChatMemberStatus.LEFT, ChatMemberStatus.KICKED}
 
 
 @user_router.message(Command("start"), only_private_chat)
 async def start(message: Message):
+
+    logging.info(f"user {message.from_user.id} started the bot")
     if await is_user_subscribed(message):
+        logging.info(f"user {message.from_user.id} subscribed")
         message_tokens = (
             "Рекомендации к фото:",
             "С вас: хорошее фото и подписка на @premieronline.",
@@ -90,4 +98,6 @@ async def start(message: Message):
         await message.answer("\n".join(message_tokens))
 
     else:
-        await message.answer('Семёёён Семёныч! Хотели обойти систему? Подпишитесь, пожалуйста на @premieronline🥺👉🏻👈🏻')
+        await message.answer(
+            "Семёёён Семёныч! Хотели обойти систему? Подпишитесь, пожалуйста на @premieronline🥺👉🏻👈🏻"
+        )
